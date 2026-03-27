@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>领导力要素幸运大转盘</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0071ce 0%, #004c91 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .game-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 1200px;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 0 20px;
+        }
+        
+        .walmart-logo {
+            color: #0071ce;
+            font-size: 32px;
+            font-weight: bold;
+        }
+        
+        .game-stats {
+            display: flex;
+            gap: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #004c91;
+        }
+        
+        .stat-item {
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #004c91;
+            margin-bottom: 10px;
+            font-size: 32px;
+            text-align: center;
+        }
+        
+        .game-rules {
+            background-color: #f8f9fa;
+            border-left: 4px solid #0071ce;
+            padding: 12px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 14px;
+            color: #555;
+            line-height: 1.5;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .game-rules h3 {
+            color: #004c91;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .game-rules ul {
+            padding-left: 18px;
+        }
+        
+        .game-rules li {
+            margin-bottom: 6px;
+        }
+        
+        .game-area {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            align-items: flex-start;
+        }
+        
+        .wheel-container {
+            position: relative;
+            width: 380px;
+            height: 380px;
+            flex-shrink: 0;
+        }
+        
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            transition: transform 4s cubic-bezier(0.2, 0.8, 0.3, 1);
+            box-shadow: 0 0 0 10px #004c91, 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .wheel-section {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            transform-origin: bottom right;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 15px;
+            font-size: 20px;
+            color: white;
+            font-weight: bold;
+            overflow: hidden;
+        }
+        
+        .wheel-text {
+            transform: rotate(45deg);
+            max-width: 90%;
+            line-height: 1.3;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+            font-weight: bold;
+        }
+        
+        .pointer {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 60px;
+            background-color: #ffc220; /* 沃尔玛黄色 */
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            z-index: 10;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+            border: 2px solid #e6ac00;
+        }
+        
+        .word-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        .selected-category {
+            margin-top: 15px;
+            padding: 15px;
+            background: linear-gradient(to right, #0071ce, #004c91);
+            border-radius: 10px;
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 113, 206, 0.3);
+        }
+        
+        .word-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .word-button {
+            padding: 12px 8px;
+            background-color: #f5f5f5;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .word-button:hover {
+            background-color: #e9e9e9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .word-button.selected {
+            background-color: #0071ce;
+            color: white;
+            border-color: #004c91;
+        }
+        
+        .word-button.correct {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #388E3C;
+        }
+        
+        .word-button.incorrect {
+            background-color: #F44336;
+            color: white;
+            border-color: #D32F2F;
+        }
+        
+        .word-button:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .spin-button, .submit-button {
+            background: linear-gradient(to right, #0071ce, #004c91);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 113, 206, 0.3);
+            font-weight: bold;
+        }
+        
+        .spin-button:hover, .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 113, 206, 0.4);
+            background: linear-gradient(to right, #0088ff, #005cb3);
+        }
+        
+        .spin-button:active, .submit-button:active {
+            transform: translateY(1px);
+        }
+        
+        .spin-button:disabled, .submit-button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .submit-button {
+            background: linear-gradient(to right, #4CAF50, #388E3C);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .submit-button:hover {
+            background: linear-gradient(to right, #5cb85c, #449d44);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+        
+        .result-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .correct-message {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+        
+        .incorrect-message {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
+        
+        /* 弹窗样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-title {
+            color: #004c91;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        
+        .modal-message {
+            font-size: 18px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .modal-button {
+            background: linear-gradient(to right, #0071ce, #004c91);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 113, 206, 0.3);
+            font-weight: bold;
+        }
+        
+        .modal-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 113, 206, 0.4);
+        }
+        
+        @media (max-width: 1100px) {
+            .game-area {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .wheel-container {
+                width: 350px;
+                height: 350px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .game-stats {
+                justify-content: center;
+            }
+            
+            .wheel-container {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .wheel-section {
+                font-size: 16px;
+                padding: 10px;
+            }
+            
+            .word-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .game-container {
+                padding: 15px;
+            }
+            
+            .word-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .wheel-container {
+                width: 280px;
+                height: 280px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .game-stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <div class="walmart-logo">Walmart</div>
+            <div class="game-stats">
+                <div class="stat-item">得分: <span id="score">0</span></div>
+                <div class="stat-item">回合: <span id="round">0</span>/3</div>
+            </div>
+        </div>
+        
+        <h1>领导力要素幸运大转盘</h1>
+        
+        <div class="game-rules">
+            <h3>游戏规则：</h3>
+            <ul>
+                <li>点击"转动转盘"按钮，转盘会随机停在一个领导力要素上</li>
+                <li>从下方的15个词语中选择3个你认为属于该领导力要素的词语</li>
+                <li>点击"提交答案"按钮检查答案，每选择一个正确词语得2分</li>
+                <li>游戏共进行3轮，得分≥16分即可通关</li>
+            </ul>
+        </div>
+        
+        <div class="game-area">
+            <div class="wheel-container">
+                <div class="pointer"></div>
+                <div class="wheel" id="wheel"></div>
+            </div>
+            
+            <div class="word-selection">
+                <button class="spin-button" id="spinButton">转动转盘</button>
+                
+                <div class="selected-category" id="selectedCategory">请转动转盘选择领导力要素</div>
+                
+                <div class="word-buttons" id="wordButtons">
+                    <!-- 词语按钮将通过JavaScript动态生成 -->
+                </div>
+                
+                <div class="controls">
+                    <button class="submit-button" id="submitButton" disabled>提交答案 (已选择 <span id="selectedCount">0</span>/3)</button>
+                </div>
+                
+                <div class="result-message" id="resultMessage"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 游戏数据 - 更新为15个词
+        const leadershipData = {
+            "尊重个人": [
+                "主动倾听，有效沟通", 
+                "积极反馈与辅导", 
+                "正面影响及激发他人"
+            ],
+            "诚信行事": [
+                "保持和倡导诚信、道德和合规行为", 
+                "以身作则，公仆领导", 
+                "自我觉察，开诚布公"
+            ],
+            "服务顾客和会员": [
+                "建立全渠道思维和全局视角", 
+                "践行EDLP/EDLC业务模式", 
+                "整合数据分析与顾客/会员洞察"
+            ],
+            "追求卓越": [
+                "保持好奇心与成长型思维", 
+                "在决策中展现勇气，鼓励创新，理性冒险", 
+                "推动数字化和变革，敏捷行动，持续改进"
+            ]
+        };
+
+        // 转盘颜色配置 - 使用与沃尔玛品牌协调的颜色
+        const categoryColors = {
+            "尊重个人": "#0071ce",    // 沃尔玛蓝
+            "诚信行事": "#4CAF50",    // 绿色
+            "服务顾客和会员": "#FF9800", // 橙色
+            "追求卓越": "#9C27B0"     // 紫色
+        };
+
+        // 游戏状态
+        let isSpinning = false;
+        let currentCategory = null;
+        let selectedWords = [];
+        let score = 0;
+        let round = 0;
+        const maxRounds = 3;
+        const wordsPerRound = 3;
+        const passingScore = 16; // 修改为16分通关
+
+        // DOM元素
+        const wheel = document.getElementById('wheel');
+        const spinButton = document.getElementById('spinButton');
+        const submitButton = document.getElementById('submitButton');
+        const selectedCategoryDisplay = document.getElementById('selectedCategory');
+        const wordButtonsContainer = document.getElementById('wordButtons');
+        const scoreDisplay = document.getElementById('score');
+        const roundDisplay = document.getElementById('round');
+        const selectedCountDisplay = document.getElementById('selectedCount');
+        const resultMessage = document.getElementById('resultMessage');
+
+        // 初始化转盘
+        function initWheel() {
+            wheel.innerHTML = '';
+            
+            const categories = Object.keys(leadershipData);
+            const anglePerSection = 360 / categories.length;
+            
+            categories.forEach((category, index) => {
+                const section = document.createElement('div');
+                section.className = 'wheel-section';
+                section.dataset.category = category;
+                
+                // 计算扇形角度和位置
+                const angle = anglePerSection * index;
+                section.style.transform = `rotate(${angle}deg)`;
+                
+                // 设置扇形颜色
+                section.style.backgroundColor = categoryColors[category];
+                
+                // 添加文字
+                const textDiv = document.createElement('div');
+                textDiv.className = 'wheel-text';
+                textDiv.textContent = category;
+                section.appendChild(textDiv);
+                
+                wheel.appendChild(section);
+            });
+        }
+
+        // 生成词语按钮
+        function generateWordButtons() {
+            wordButtonsContainer.innerHTML = '';
+            selectedWords = [];
+            updateSelectedCount();
+            
+            // 获取所有词语并随机排序
+            const allWords = [];
+            Object.values(leadershipData).forEach(words => {
+                allWords.push(...words);
+            });
+            
+            // 随机排序
+            const shuffledWords = allWords.sort(() => Math.random() - 0.5);
+            
+            // 创建按钮
+            shuffledWords.forEach(word => {
+                const button = document.createElement('button');
+                button.className = 'word-button';
+                button.textContent = word;
+                button.dataset.word = word;
+                
+                button.addEventListener('click', () => {
+                    if (isSpinning || !currentCategory) return;
+                    
+                    if (button.classList.contains('selected')) {
+                        // 取消选择
+                        button.classList.remove('selected');
+                        selectedWords = selectedWords.filter(w => w !== word);
+                    } else {
+                        // 选择词语
+                        if (selectedWords.length < wordsPerRound) {
+                            button.classList.add('selected');
+                            selectedWords.push(word);
+                        }
+                    }
+                    
+                    updateSelectedCount();
+                });
+                
+                wordButtonsContainer.appendChild(button);
+            });
+        }
+
+        // 更新已选择词语计数
+        function updateSelectedCount() {
+            selectedCountDisplay.textContent = selectedWords.length;
+            submitButton.disabled = selectedWords.length !== wordsPerRound || isSpinning || !currentCategory;
+        }
+
+        // 转动转盘
+        function spinWheel() {
+            if (isSpinning) return;
+            
+            isSpinning = true;
+            spinButton.disabled = true;
+            submitButton.disabled = true;
+            resultMessage.textContent = '';
+            resultMessage.className = 'result-message';
+            
+            // 重置词语按钮状态
+            document.querySelectorAll('.word-button').forEach(button => {
+                button.classList.remove('selected', 'correct', 'incorrect');
+                button.disabled = false;
+            });
+            
+            selectedWords = [];
+            updateSelectedCount();
+            
+            // 随机选择类别
+            const categories = Object.keys(leadershipData);
+            const randomIndex = Math.floor(Math.random() * categories.length);
+            currentCategory = categories[randomIndex];
+            
+            // 计算旋转角度（多转几圈然后停在选中的位置）
+            const anglePerSection = 360 / categories.length;
+            const extraRotations = 5; // 额外转5圈
+            const targetAngle = 360 * extraRotations + (anglePerSection * randomIndex) - (anglePerSection / 2);
+            
+            // 应用旋转动画
+            wheel.style.transform = `rotate(-${targetAngle}deg)`;
+            
+            // 旋转结束后更新显示
+            setTimeout(() => {
+                isSpinning = false;
+                spinButton.disabled = false;
+                selectedCategoryDisplay.textContent = currentCategory;
+                selectedCategoryDisplay.style.background = `linear-gradient(to right, ${categoryColors[currentCategory]}, ${darkenColor(categoryColors[currentCategory], 20)})`;
+                updateSelectedCount();
+            }, 4000);
+        }
+
+        // 颜色变暗函数
+        function darkenColor(color, percent) {
+            const num = parseInt(color.slice(1), 16);
+            const amt = Math.round(2.55 * percent);
+            const R = (num >> 16) - amt;
+            const G = (num >> 8 & 0x00FF) - amt;
+            const B = (num & 0x0000FF) - amt;
+            return "#" + (0x1000000 + (R < 0 ? 0 : R) * 0x10000 + (G < 0 ? 0 : G) * 0x100 + (B < 0 ? 0 : B)).toString(16).slice(1);
+        }
+
+        // 显示回合结束弹窗
+        function showRoundModal(roundScore, isFinalRound) {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            
+            let message = `第${round}回合结束！您本轮获得了${roundScore}分，当前总分为${score}分。`;
+            
+            if (!isFinalRound) {
+                message += `<br><br>准备开始第${round + 1}回合！`;
+            }
+            
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <h2 class="modal-title">${isFinalRound ? '游戏结束' : '回合结束'}</h2>
+                    <p class="modal-message">${message}</p>
+                    <button class="modal-button" id="modalContinueButton">${isFinalRound ? '查看结果' : '继续游戏'}</button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // 添加继续按钮事件监听
+            document.getElementById('modalContinueButton').addEventListener('click', function() {
+                document.body.removeChild(modal);
+                
+                if (isFinalRound) {
+                    // 如果是最后一轮，显示最终结果
+                    showFinalResultModal();
+                } else {
+                    // 如果不是最后一轮，开始下一轮
+                    spinButton.disabled = false;
+                }
+            });
+        }
+
+        // 显示最终结果弹窗
+        function showFinalResultModal() {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            
+            const isPassed = score >= passingScore;
+            const message = isPassed 
+                ? `恭喜您！您以${score}分的成绩成功通关！您对领导力要素有很好的理解。`
+                : `很遗憾，您获得了${score}分，未能达到16分的通关标准。请再接再厉！`;
+                
+            const title = isPassed ? '恭喜通关！' : '游戏结束';
+            
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <h2 class="modal-title">${title}</h2>
+                    <p class="modal-message">${message}</p>
+                    <button class="modal-button" onclick="location.reload()">重新开始游戏</button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        // 提交答案
+        function submitAnswer() {
+            if (isSpinning || !currentCategory || selectedWords.length !== wordsPerRound) return;
+            
+            round++;
+            roundDisplay.textContent = round;
+            
+            // 禁用所有按钮
+            document.querySelectorAll('.word-button').forEach(button => {
+                button.disabled = true;
+            });
+            submitButton.disabled = true;
+            
+            // 检查答案
+            const correctWords = leadershipData[currentCategory];
+            let correctCount = 0;
+            
+            selectedWords.forEach(word => {
+                const button = document.querySelector(`.word-button[data-word="${word}"]`);
+                if (correctWords.includes(word)) {
+                    button.classList.add('correct');
+                    correctCount++;
+                } else {
+                    button.classList.add('incorrect');
+                }
+            });
+            
+            // 计算得分
+            const roundScore = correctCount * 2;
+            score += roundScore;
+            scoreDisplay.textContent = score;
+            
+            // 显示结果
+            if (correctCount === wordsPerRound) {
+                resultMessage.textContent = `完美！所有选择都正确！获得${roundScore}分。`;
+                resultMessage.className = 'result-message correct-message';
+            } else {
+                resultMessage.textContent = `您选择了${correctCount}个正确词语，获得${roundScore}分。正确的词语是：${correctWords.join('、')}`;
+                resultMessage.className = 'result-message incorrect-message';
+            }
+            
+            // 检查游戏是否结束
+            const isFinalRound = round >= maxRounds;
+            
+            // 显示回合结束弹窗
+            setTimeout(() => {
+                showRoundModal(roundScore, isFinalRound);
+            }, 1500);
+        }
+
+        // 事件监听
+        spinButton.addEventListener('click', spinWheel);
+        submitButton.addEventListener('click', submitAnswer);
+
+        // 初始化游戏
+        initWheel();
+        generateWordButtons();
+    </script>
+
+    <style>
+      .fixed-logo {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        transition: opacity 0.3s;
+      }
+      .fixed-logo:hover {
+        opacity: 0.8;
+      }
+      .fixed-logo img {
+        width: 60px;
+        height: auto;
+        border-radius: 50%;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      /* 移动端样式：当屏幕宽度小于等于768px时生效（常见断点） */
+      @media (max-width: 768px) {
+        .fixed-logo img {
+          width: 40px; /* 移动端宽度 */
+        }
+        /* 如果需要，也可以同时调整Logo距离边界的距离 */
+        .fixed-logo {
+          bottom: 15px;
+          right: 15px;
+        }
+      }
+    </style>
+    <div class="fixed-logo">
+      <img src="https://aloha.walmartmobile.cn/user-center/upload/viewImage/bktuser-center-prod-8702570844139794433.png" alt="Logo" loading="lazy">
+    </div>
+  </body>
+</html>
