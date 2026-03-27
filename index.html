@@ -1,808 +1,387 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>领导力要素幸运大转盘</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #0071ce 0%, #004c91 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        
-        .game-container {
-            background-color: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 1200px;
-            padding: 30px;
-            text-align: center;
-        }
-        
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            padding: 0 20px;
-        }
-        
-        .walmart-logo {
-            color: #0071ce;
-            font-size: 32px;
-            font-weight: bold;
-        }
-        
-        .game-stats {
-            display: flex;
-            gap: 30px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #004c91;
-        }
-        
-        .stat-item {
-            background: linear-gradient(to right, #f8f9fa, #e9ecef);
-            padding: 10px 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        
-        h1 {
-            color: #004c91;
-            margin-bottom: 10px;
-            font-size: 32px;
-            text-align: center;
-        }
-        
-        .game-rules {
-            background-color: #f8f9fa;
-            border-left: 4px solid #0071ce;
-            padding: 12px;
-            margin-bottom: 25px;
-            border-radius: 8px;
-            text-align: left;
-            font-size: 14px;
-            color: #555;
-            line-height: 1.5;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .game-rules h3 {
-            color: #004c91;
-            margin-bottom: 8px;
-            font-size: 16px;
-        }
-        
-        .game-rules ul {
-            padding-left: 18px;
-        }
-        
-        .game-rules li {
-            margin-bottom: 6px;
-        }
-        
-        .game-area {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 40px;
-            align-items: flex-start;
-        }
-        
-        .wheel-container {
-            position: relative;
-            width: 380px;
-            height: 380px;
-            flex-shrink: 0;
-        }
-        
-        .wheel {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            position: relative;
-            overflow: hidden;
-            transition: transform 4s cubic-bezier(0.2, 0.8, 0.3, 1);
-            box-shadow: 0 0 0 10px #004c91, 0 0 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        .wheel-section {
-            position: absolute;
-            width: 50%;
-            height: 50%;
-            transform-origin: bottom right;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 15px;
-            font-size: 20px;
-            color: white;
-            font-weight: bold;
-            overflow: hidden;
-        }
-        
-        .wheel-text {
-            transform: rotate(45deg);
-            max-width: 90%;
-            line-height: 1.3;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
-            font-weight: bold;
-        }
-        
-        .pointer {
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40px;
-            height: 60px;
-            background-color: #ffc220; /* 沃尔玛黄色 */
-            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-            z-index: 10;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
-            border: 2px solid #e6ac00;
-        }
-        
-        .word-selection {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 100%;
-            max-width: 600px;
-        }
-        
-        .selected-category {
-            margin-top: 15px;
-            padding: 15px;
-            background: linear-gradient(to right, #0071ce, #004c91);
-            border-radius: 10px;
-            font-size: 22px;
-            font-weight: bold;
-            color: white;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(0, 113, 206, 0.3);
-        }
-        
-        .word-buttons {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        .word-button {
-            padding: 12px 8px;
-            background-color: #f5f5f5;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 14px;
-            font-weight: bold;
-            color: #333;
-            min-height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-        
-        .word-button:hover {
-            background-color: #e9e9e9;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        .word-button.selected {
-            background-color: #0071ce;
-            color: white;
-            border-color: #004c91;
-        }
-        
-        .word-button.correct {
-            background-color: #4CAF50;
-            color: white;
-            border-color: #388E3C;
-        }
-        
-        .word-button.incorrect {
-            background-color: #F44336;
-            color: white;
-            border-color: #D32F2F;
-        }
-        
-        .word-button:disabled {
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-        
-        .controls {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .spin-button, .submit-button {
-            background: linear-gradient(to right, #0071ce, #004c91);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(0, 113, 206, 0.3);
-            font-weight: bold;
-        }
-        
-        .spin-button:hover, .submit-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 113, 206, 0.4);
-            background: linear-gradient(to right, #0088ff, #005cb3);
-        }
-        
-        .spin-button:active, .submit-button:active {
-            transform: translateY(1px);
-        }
-        
-        .spin-button:disabled, .submit-button:disabled {
-            background: #bdc3c7;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        .submit-button {
-            background: linear-gradient(to right, #4CAF50, #388E3C);
-            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
-        }
-        
-        .submit-button:hover {
-            background: linear-gradient(to right, #5cb85c, #449d44);
-            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
-        }
-        
-        .result-message {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: bold;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .correct-message {
-            background-color: #dff0d8;
-            color: #3c763d;
-            border: 1px solid #d6e9c6;
-        }
-        
-        .incorrect-message {
-            background-color: #f2dede;
-            color: #a94442;
-            border: 1px solid #ebccd1;
-        }
-        
-        /* 弹窗样式 */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        
-        .modal-content {
-            background-color: white;
-            border-radius: 15px;
-            padding: 30px;
-            text-align: center;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-        
-        .modal-title {
-            color: #004c91;
-            font-size: 28px;
-            margin-bottom: 20px;
-        }
-        
-        .modal-message {
-            font-size: 18px;
-            margin-bottom: 25px;
-            line-height: 1.6;
-        }
-        
-        .modal-button {
-            background: linear-gradient(to right, #0071ce, #004c91);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 16px;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(0, 113, 206, 0.3);
-            font-weight: bold;
-        }
-        
-        .modal-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 113, 206, 0.4);
-        }
-        
-        @media (max-width: 1100px) {
-            .game-area {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .wheel-container {
-                width: 350px;
-                height: 350px;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
-            }
-            
-            .game-stats {
-                justify-content: center;
-            }
-            
-            .wheel-container {
-                width: 300px;
-                height: 300px;
-            }
-            
-            .wheel-section {
-                font-size: 16px;
-                padding: 10px;
-            }
-            
-            .word-buttons {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .game-container {
-                padding: 15px;
-            }
-            
-            .word-buttons {
-                grid-template-columns: 1fr;
-            }
-            
-            .wheel-container {
-                width: 280px;
-                height: 280px;
-            }
-            
-            h1 {
-                font-size: 24px;
-            }
-            
-            .game-stats {
-                flex-direction: column;
-                gap: 10px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>&#39046;&#23548;&#21147;&#35201;&#32032;&#24184;&#36816;&#22823;&#36716;&#30424;</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body {
+  font-family: 'PingFang SC','Microsoft YaHei',sans-serif;
+  background: linear-gradient(135deg,#0071ce 0%,#004c91 100%);
+  min-height: 100vh;
+  padding: 12px;
+}
+.game-container {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 18px 14px 24px;
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.walmart-logo { color:#0071ce; font-size:22px; font-weight:bold; }
+.game-stats { display:flex; gap:8px; font-size:13px; font-weight:bold; color:#004c91; }
+.stat-item { background:linear-gradient(to right,#f8f9fa,#e9ecef); padding:6px 12px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
+h1 { color:#004c91; font-size:19px; text-align:center; margin-bottom:10px; line-height:1.3; }
+.game-rules { background:#f8f9fa; border-left:4px solid #0071ce; padding:10px 12px; margin-bottom:16px; border-radius:8px; font-size:12px; color:#555; line-height:1.6; }
+.game-rules h3 { color:#004c91; margin-bottom:6px; font-size:13px; }
+.game-rules ul { padding-left:16px; }
+.game-rules li { margin-bottom:3px; }
+
+.wheel-wrapper { display:flex; flex-direction:column; align-items:center; gap:14px; }
+
+/* SVG wheel */
+.wheel-container { position:relative; width:280px; height:280px; }
+#wheelSvg { transition: transform 4s cubic-bezier(0.2,0.8,0.3,1); transform-origin: center center; }
+.pointer {
+  position:absolute; top:-22px; left:50%; transform:translateX(-50%);
+  width:34px; height:50px;
+  background:#ffc220;
+  clip-path:polygon(50% 0%,0% 100%,100% 100%);
+  z-index:10;
+  box-shadow:0 3px 6px rgba(0,0,0,0.3);
+  border:2px solid #e6ac00;
+}
+
+.selected-category {
+  width:100%; padding:12px 16px;
+  background:linear-gradient(to right,#0071ce,#004c91);
+  border-radius:10px; font-size:16px; font-weight:bold; color:white;
+  min-height:50px; display:flex; align-items:center; justify-content:center;
+  text-align:center; box-shadow:0 4px 10px rgba(0,113,206,0.3);
+}
+.spin-button, .submit-button {
+  width:100%; background:linear-gradient(to right,#0071ce,#004c91);
+  color:white; border:none; padding:14px 20px; font-size:17px;
+  border-radius:50px; cursor:pointer; transition:all 0.2s;
+  box-shadow:0 4px 15px rgba(0,113,206,0.3); font-weight:bold;
+  touch-action:manipulation;
+}
+.spin-button:active { transform:scale(0.97); }
+.spin-button:disabled, .submit-button:disabled { background:#bdc3c7; cursor:not-allowed; box-shadow:none; }
+.submit-button { background:linear-gradient(to right,#4CAF50,#388E3C); box-shadow:0 4px 15px rgba(76,175,80,0.3); font-size:15px; }
+.submit-button:active { transform:scale(0.97); }
+
+.word-buttons { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; width:100%; margin-top:4px; }
+.word-button {
+  padding:10px 6px; background:#f5f5f5; border:2px solid #ddd;
+  border-radius:8px; cursor:pointer; transition:all 0.2s;
+  font-size:12px; font-weight:bold; color:#333;
+  min-height:64px; display:flex; align-items:center; justify-content:center;
+  text-align:center; line-height:1.4; touch-action:manipulation;
+}
+.word-button:active { transform:scale(0.96); }
+.word-button.selected { background:#0071ce; color:white; border-color:#004c91; }
+.word-button.correct  { background:#4CAF50; color:white; border-color:#388E3C; }
+.word-button.incorrect{ background:#F44336; color:white; border-color:#D32F2F; }
+.word-button:disabled { cursor:not-allowed; opacity:0.75; }
+
+.result-message { margin-top:10px; padding:12px; border-radius:10px; font-size:14px; font-weight:bold; min-height:48px; display:flex; align-items:center; justify-content:center; text-align:center; line-height:1.5; }
+.correct-message   { background:#dff0d8; color:#3c763d; border:1px solid #d6e9c6; }
+.incorrect-message { background:#f2dede; color:#a94442; border:1px solid #ebccd1; }
+
+.modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; z-index:1000; padding:20px; }
+.modal-content { background:white; border-radius:16px; padding:28px 22px; text-align:center; width:100%; max-width:360px; box-shadow:0 10px 30px rgba(0,0,0,0.3); }
+.modal-title   { color:#004c91; font-size:22px; margin-bottom:16px; }
+.modal-message { font-size:15px; margin-bottom:22px; line-height:1.7; color:#333; }
+.modal-button  { background:linear-gradient(to right,#0071ce,#004c91); color:white; border:none; padding:13px 32px; font-size:16px; border-radius:50px; cursor:pointer; box-shadow:0 4px 15px rgba(0,113,206,0.3); font-weight:bold; touch-action:manipulation; }
+.fixed-logo { position:fixed; bottom:14px; right:14px; z-index:999; }
+.fixed-logo img { width:40px; height:auto; border-radius:50%; box-shadow:0 2px 10px rgba(0,0,0,0.2); }
+</style>
 </head>
 <body>
-    <div class="game-container">
-        <div class="header">
-            <div class="walmart-logo">Walmart</div>
-            <div class="game-stats">
-                <div class="stat-item">得分: <span id="score">0</span></div>
-                <div class="stat-item">回合: <span id="round">0</span>/3</div>
-            </div>
-        </div>
-        
-        <h1>领导力要素幸运大转盘</h1>
-        
-        <div class="game-rules">
-            <h3>游戏规则：</h3>
-            <ul>
-                <li>点击"转动转盘"按钮，转盘会随机停在一个领导力要素上</li>
-                <li>从下方的15个词语中选择3个你认为属于该领导力要素的词语</li>
-                <li>点击"提交答案"按钮检查答案，每选择一个正确词语得2分</li>
-                <li>游戏共进行3轮，得分≥16分即可通关</li>
-            </ul>
-        </div>
-        
-        <div class="game-area">
-            <div class="wheel-container">
-                <div class="pointer"></div>
-                <div class="wheel" id="wheel"></div>
-            </div>
-            
-            <div class="word-selection">
-                <button class="spin-button" id="spinButton">转动转盘</button>
-                
-                <div class="selected-category" id="selectedCategory">请转动转盘选择领导力要素</div>
-                
-                <div class="word-buttons" id="wordButtons">
-                    <!-- 词语按钮将通过JavaScript动态生成 -->
-                </div>
-                
-                <div class="controls">
-                    <button class="submit-button" id="submitButton" disabled>提交答案 (已选择 <span id="selectedCount">0</span>/3)</button>
-                </div>
-                
-                <div class="result-message" id="resultMessage"></div>
-            </div>
-        </div>
+<div class="game-container">
+  <div class="header">
+    <div class="walmart-logo">Walmart</div>
+    <div class="game-stats">
+      <div class="stat-item">&#24471;&#20998;: <span id="score">0</span></div>
+      <div class="stat-item">&#22238;&#21512;: <span id="round">0</span>/3</div>
+    </div>
+  </div>
+
+  <h1>&#39046;&#23548;&#21147;&#35201;&#32032;&#24184;&#36816;&#22823;&#36716;&#30424;</h1>
+
+  <div class="game-rules">
+    <h3>&#28216;&#25103;&#35268;&#21017;&#65306;</h3>
+    <ul>
+      <li>&#28857;&#20987;&#8220;&#36716;&#21160;&#36716;&#30424;&#8221;&#65292;&#36716;&#30424;&#38543;&#26426;&#20572;&#22312;&#19968;&#20491;&#39046;&#23548;&#21147;&#35201;&#32032;</li>
+      <li>&#20174;&#19979;&#26041;&#35789;&#35821;&#20013;&#36873;&#25321; 3 &#20491;&#23646;&#20110;&#35813;&#35201;&#32032;&#30340;&#35789;&#35821;</li>
+      <li>&#27ỗng&#36873;&#23545;&#19968;&#20491;&#24471; 2 &#20998;&#65292;&#20849; 3 &#36650;&#65292;&#24471;&#20998; &ge; 16 &#20998;&#36890;&#20851;</li>
+    </ul>
+  </div>
+
+  <div class="wheel-wrapper">
+    <div class="wheel-container">
+      <div class="pointer"></div>
+      <svg id="wheelSvg" width="280" height="280" viewBox="0 0 280 280"></svg>
     </div>
 
-    <script>
-        // 游戏数据 - 更新为15个词
-        const leadershipData = {
-            "尊重个人": [
-                "主动倾听，有效沟通", 
-                "积极反馈与辅导", 
-                "正面影响及激发他人"
-            ],
-            "诚信行事": [
-                "保持和倡导诚信、道德和合规行为", 
-                "以身作则，公仆领导", 
-                "自我觉察，开诚布公"
-            ],
-            "服务顾客和会员": [
-                "建立全渠道思维和全局视角", 
-                "践行EDLP/EDLC业务模式", 
-                "整合数据分析与顾客/会员洞察"
-            ],
-            "追求卓越": [
-                "保持好奇心与成长型思维", 
-                "在决策中展现勇气，鼓励创新，理性冒险", 
-                "推动数字化和变革，敏捷行动，持续改进"
-            ]
-        };
+    <button class="spin-button" id="spinButton">&#127919; &#36716;&#21160;&#36716;&#30424;</button>
+    <div class="selected-category" id="selectedCategory">&#35831;&#36716;&#21160;&#36716;&#30424;&#36873;&#25321;&#39046;&#23548;&#21147;&#35201;&#32032;</div>
+    <div class="word-buttons" id="wordButtons"></div>
+    <button class="submit-button" id="submitButton" disabled>&#25552;&#20132;&#31572;&#26696;&#65288;&#24050;&#36873; <span id="selectedCount">0</span>/3&#65289;</button>
+    <div class="result-message" id="resultMessage"></div>
+  </div>
+</div>
 
-        // 转盘颜色配置 - 使用与沃尔玛品牌协调的颜色
-        const categoryColors = {
-            "尊重个人": "#0071ce",    // 沃尔玛蓝
-            "诚信行事": "#4CAF50",    // 绿色
-            "服务顾客和会员": "#FF9800", // 橙色
-            "追求卓越": "#9C27B0"     // 紫色
-        };
+<div class="fixed-logo">
+  <img src="https://aloha.walmartmobile.cn/user-center/upload/viewImage/bktuser-center-prod-8702570844139794433.png" alt="Logo" loading="lazy">
+</div>
 
-        // 游戏状态
-        let isSpinning = false;
-        let currentCategory = null;
-        let selectedWords = [];
-        let score = 0;
-        let round = 0;
-        const maxRounds = 3;
-        const wordsPerRound = 3;
-        const passingScore = 16; // 修改为16分通关
+<script>
+const leadershipData = {
+  "\u5c0a\u91cd\u4e2a\u4eba": ["\u4e3b\u52a8\u503e\u542c\uff0c\u6709\u6548\u6c9f\u901a","\u79ef\u6781\u53cd\u9988\u4e0e\u8f85\u5bfc","\u6b63\u9762\u5f71\u54cd\u53ca\u6fc0\u53d1\u4ed6\u4eba"],
+  "\u8bda\u4fe1\u884c\u4e8b": ["\u4fdd\u6301\u548c\u5021\u5bfc\u8bda\u4fe1\u3001\u9053\u5fb7\u548c\u5408\u89c4\u884c\u4e3a","\u4ee5\u8eab\u4f5c\u5219\uff0c\u516c\u4ec6\u9886\u5bfc","\u81ea\u6211\u89c9\u5bdf\uff0c\u5f00\u8bda\u5e03\u516c"],
+  "\u670d\u52a1\u987e\u5ba2\u548c\u4f1a\u5458": ["\u5efa\u7acb\u5168\u6e20\u9053\u601d\u7ef4\u548c\u5168\u5c40\u89c6\u89d2","\u8df5\u884cEDLP/EDLC\u4e1a\u52a1\u6a21\u5f0f","\u6574\u5408\u6570\u636e\u5206\u6790\u4e0e\u987e\u5ba2/\u4f1a\u5458\u6d1e\u5bdf"],
+  "\u8ffd\u6c42\u5353\u8d8a": ["\u4fdd\u6301\u597d\u5947\u5fc3\u4e0e\u6210\u957f\u578b\u601d\u7ef4","\u5728\u51b3\u7b56\u4e2d\u5c55\u73b0\u52c7\u6c14\uff0c\u9f13\u52b1\u521b\u65b0\uff0c\u7406\u6027\u5192\u9669","\u63a8\u52a8\u6570\u5b57\u5316\u548c\u53d8\u9769\uff0c\u654f\u6377\u884c\u52a8\uff0c\u6301\u7eed\u6539\u8fdb"]
+};
 
-        // DOM元素
-        const wheel = document.getElementById('wheel');
-        const spinButton = document.getElementById('spinButton');
-        const submitButton = document.getElementById('submitButton');
-        const selectedCategoryDisplay = document.getElementById('selectedCategory');
-        const wordButtonsContainer = document.getElementById('wordButtons');
-        const scoreDisplay = document.getElementById('score');
-        const roundDisplay = document.getElementById('round');
-        const selectedCountDisplay = document.getElementById('selectedCount');
-        const resultMessage = document.getElementById('resultMessage');
+const categoryColors = {
+  "\u5c0a\u91cd\u4e2a\u4eba":"#0071ce",
+  "\u8bda\u4fe1\u884c\u4e8b":"#4CAF50",
+  "\u670d\u52a1\u987e\u5ba2\u548c\u4f1a\u5458":"#FF9800",
+  "\u8ffd\u6c42\u5353\u8d8a":"#9C27B0"
+};
 
-        // 初始化转盘
-        function initWheel() {
-            wheel.innerHTML = '';
-            
-            const categories = Object.keys(leadershipData);
-            const anglePerSection = 360 / categories.length;
-            
-            categories.forEach((category, index) => {
-                const section = document.createElement('div');
-                section.className = 'wheel-section';
-                section.dataset.category = category;
-                
-                // 计算扇形角度和位置
-                const angle = anglePerSection * index;
-                section.style.transform = `rotate(${angle}deg)`;
-                
-                // 设置扇形颜色
-                section.style.backgroundColor = categoryColors[category];
-                
-                // 添加文字
-                const textDiv = document.createElement('div');
-                textDiv.className = 'wheel-text';
-                textDiv.textContent = category;
-                section.appendChild(textDiv);
-                
-                wheel.appendChild(section);
-            });
-        }
+let isSpinning=false, currentCategory=null, selectedWords=[];
+let score=0, round=0, currentRotation=0;
+const maxRounds=3, wordsPerRound=3, passingScore=16;
 
-        // 生成词语按钮
-        function generateWordButtons() {
-            wordButtonsContainer.innerHTML = '';
-            selectedWords = [];
-            updateSelectedCount();
-            
-            // 获取所有词语并随机排序
-            const allWords = [];
-            Object.values(leadershipData).forEach(words => {
-                allWords.push(...words);
-            });
-            
-            // 随机排序
-            const shuffledWords = allWords.sort(() => Math.random() - 0.5);
-            
-            // 创建按钮
-            shuffledWords.forEach(word => {
-                const button = document.createElement('button');
-                button.className = 'word-button';
-                button.textContent = word;
-                button.dataset.word = word;
-                
-                button.addEventListener('click', () => {
-                    if (isSpinning || !currentCategory) return;
-                    
-                    if (button.classList.contains('selected')) {
-                        // 取消选择
-                        button.classList.remove('selected');
-                        selectedWords = selectedWords.filter(w => w !== word);
-                    } else {
-                        // 选择词语
-                        if (selectedWords.length < wordsPerRound) {
-                            button.classList.add('selected');
-                            selectedWords.push(word);
-                        }
-                    }
-                    
-                    updateSelectedCount();
-                });
-                
-                wordButtonsContainer.appendChild(button);
-            });
-        }
+const wheelSvg      = document.getElementById('wheelSvg');
+const spinButton    = document.getElementById('spinButton');
+const submitButton  = document.getElementById('submitButton');
+const selectedCatEl = document.getElementById('selectedCategory');
+const wordButtonsEl = document.getElementById('wordButtons');
+const scoreEl       = document.getElementById('score');
+const roundEl       = document.getElementById('round');
+const selectedCountEl = document.getElementById('selectedCount');
+const resultMsg     = document.getElementById('resultMessage');
 
-        // 更新已选择词语计数
-        function updateSelectedCount() {
-            selectedCountDisplay.textContent = selectedWords.length;
-            submitButton.disabled = selectedWords.length !== wordsPerRound || isSpinning || !currentCategory;
-        }
+const CX=140, CY=140, R=135;
 
-        // 转动转盘
-        function spinWheel() {
-            if (isSpinning) return;
-            
-            isSpinning = true;
-            spinButton.disabled = true;
-            submitButton.disabled = true;
-            resultMessage.textContent = '';
-            resultMessage.className = 'result-message';
-            
-            // 重置词语按钮状态
-            document.querySelectorAll('.word-button').forEach(button => {
-                button.classList.remove('selected', 'correct', 'incorrect');
-                button.disabled = false;
-            });
-            
-            selectedWords = [];
-            updateSelectedCount();
-            
-            // 随机选择类别
-            const categories = Object.keys(leadershipData);
-            const randomIndex = Math.floor(Math.random() * categories.length);
-            currentCategory = categories[randomIndex];
-            
-            // 计算旋转角度（多转几圈然后停在选中的位置）
-            const anglePerSection = 360 / categories.length;
-            const extraRotations = 5; // 额外转5圈
-            const targetAngle = 360 * extraRotations + (anglePerSection * randomIndex) - (anglePerSection / 2);
-            
-            // 应用旋转动画
-            wheel.style.transform = `rotate(-${targetAngle}deg)`;
-            
-            // 旋转结束后更新显示
-            setTimeout(() => {
-                isSpinning = false;
-                spinButton.disabled = false;
-                selectedCategoryDisplay.textContent = currentCategory;
-                selectedCategoryDisplay.style.background = `linear-gradient(to right, ${categoryColors[currentCategory]}, ${darkenColor(categoryColors[currentCategory], 20)})`;
-                updateSelectedCount();
-            }, 4000);
-        }
+function polarToXY(angleDeg, r) {
+  const rad = (angleDeg - 90) * Math.PI / 180;
+  return { x: CX + r * Math.cos(rad), y: CY + r * Math.sin(rad) };
+}
 
-        // 颜色变暗函数
-        function darkenColor(color, percent) {
-            const num = parseInt(color.slice(1), 16);
-            const amt = Math.round(2.55 * percent);
-            const R = (num >> 16) - amt;
-            const G = (num >> 8 & 0x00FF) - amt;
-            const B = (num & 0x0000FF) - amt;
-            return "#" + (0x1000000 + (R < 0 ? 0 : R) * 0x10000 + (G < 0 ? 0 : G) * 0x100 + (B < 0 ? 0 : B)).toString(16).slice(1);
-        }
+function initWheel() {
+  wheelSvg.innerHTML = '';
+  const cats = Object.keys(leadershipData);
+  const n = cats.length;
+  const slice = 360 / n;
 
-        // 显示回合结束弹窗
-        function showRoundModal(roundScore, isFinalRound) {
-            const modal = document.createElement('div');
-            modal.className = 'modal-overlay';
-            
-            let message = `第${round}回合结束！您本轮获得了${roundScore}分，当前总分为${score}分。`;
-            
-            if (!isFinalRound) {
-                message += `<br><br>准备开始第${round + 1}回合！`;
-            }
-            
-            modal.innerHTML = `
-                <div class="modal-content">
-                    <h2 class="modal-title">${isFinalRound ? '游戏结束' : '回合结束'}</h2>
-                    <p class="modal-message">${message}</p>
-                    <button class="modal-button" id="modalContinueButton">${isFinalRound ? '查看结果' : '继续游戏'}</button>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-            
-            // 添加继续按钮事件监听
-            document.getElementById('modalContinueButton').addEventListener('click', function() {
-                document.body.removeChild(modal);
-                
-                if (isFinalRound) {
-                    // 如果是最后一轮，显示最终结果
-                    showFinalResultModal();
-                } else {
-                    // 如果不是最后一轮，开始下一轮
-                    spinButton.disabled = false;
-                }
-            });
-        }
+  // outer ring
+  const ring = document.createElementNS('http://www.w3.org/2000/svg','circle');
+  ring.setAttribute('cx', CX); ring.setAttribute('cy', CY); ring.setAttribute('r', R+8);
+  ring.setAttribute('fill','#004c91');
+  wheelSvg.appendChild(ring);
 
-        // 显示最终结果弹窗
-        function showFinalResultModal() {
-            const modal = document.createElement('div');
-            modal.className = 'modal-overlay';
-            
-            const isPassed = score >= passingScore;
-            const message = isPassed 
-                ? `恭喜您！您以${score}分的成绩成功通关！您对领导力要素有很好的理解。`
-                : `很遗憾，您获得了${score}分，未能达到16分的通关标准。请再接再厉！`;
-                
-            const title = isPassed ? '恭喜通关！' : '游戏结束';
-            
-            modal.innerHTML = `
-                <div class="modal-content">
-                    <h2 class="modal-title">${title}</h2>
-                    <p class="modal-message">${message}</p>
-                    <button class="modal-button" onclick="location.reload()">重新开始游戏</button>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-        }
+  cats.forEach((cat, i) => {
+    const startAngle = slice * i;
+    const endAngle   = slice * (i + 1);
+    const midAngle   = (startAngle + endAngle) / 2;
 
-        // 提交答案
-        function submitAnswer() {
-            if (isSpinning || !currentCategory || selectedWords.length !== wordsPerRound) return;
-            
-            round++;
-            roundDisplay.textContent = round;
-            
-            // 禁用所有按钮
-            document.querySelectorAll('.word-button').forEach(button => {
-                button.disabled = true;
-            });
-            submitButton.disabled = true;
-            
-            // 检查答案
-            const correctWords = leadershipData[currentCategory];
-            let correctCount = 0;
-            
-            selectedWords.forEach(word => {
-                const button = document.querySelector(`.word-button[data-word="${word}"]`);
-                if (correctWords.includes(word)) {
-                    button.classList.add('correct');
-                    correctCount++;
-                } else {
-                    button.classList.add('incorrect');
-                }
-            });
-            
-            // 计算得分
-            const roundScore = correctCount * 2;
-            score += roundScore;
-            scoreDisplay.textContent = score;
-            
-            // 显示结果
-            if (correctCount === wordsPerRound) {
-                resultMessage.textContent = `完美！所有选择都正确！获得${roundScore}分。`;
-                resultMessage.className = 'result-message correct-message';
-            } else {
-                resultMessage.textContent = `您选择了${correctCount}个正确词语，获得${roundScore}分。正确的词语是：${correctWords.join('、')}`;
-                resultMessage.className = 'result-message incorrect-message';
-            }
-            
-            // 检查游戏是否结束
-            const isFinalRound = round >= maxRounds;
-            
-            // 显示回合结束弹窗
-            setTimeout(() => {
-                showRoundModal(roundScore, isFinalRound);
-            }, 1500);
-        }
+    const p1 = polarToXY(startAngle, R);
+    const p2 = polarToXY(endAngle, R);
+    const largeArc = slice > 180 ? 1 : 0;
 
-        // 事件监听
-        spinButton.addEventListener('click', spinWheel);
-        submitButton.addEventListener('click', submitAnswer);
+    // slice path
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    const d = `M ${CX} ${CY} L ${p1.x} ${p1.y} A ${R} ${R} 0 ${largeArc} 1 ${p2.x} ${p2.y} Z`;
+    path.setAttribute('d', d);
+    path.setAttribute('fill', categoryColors[cat]);
+    path.setAttribute('stroke','white');
+    path.setAttribute('stroke-width','2');
+    wheelSvg.appendChild(path);
 
-        // 初始化游戏
-        initWheel();
-        generateWordButtons();
-    </script>
+    // text along radius at 60% from center
+    const textR = R * 0.58;
+    const tp = polarToXY(midAngle, textR);
+    const textRot = midAngle; // rotate text to follow radius
 
-    <style>
-      .fixed-logo {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 1000;
-        transition: opacity 0.3s;
+    const chars = cat.split('');
+    const lineLen = chars.length <= 4 ? chars.length : Math.ceil(chars.length / 2);
+    const lines = [];
+    for (let j = 0; j < chars.length; j += lineLen) {
+      lines.push(chars.slice(j, j + lineLen).join(''));
+    }
+
+    const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.setAttribute('transform', `translate(${tp.x},${tp.y}) rotate(${textRot})`);
+
+    const lineH = 18;
+    const totalH = lines.length * lineH;
+    lines.forEach((line, li) => {
+      const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+      t.setAttribute('x', '0');
+      t.setAttribute('y', String(-totalH/2 + li*lineH + lineH*0.8));
+      t.setAttribute('text-anchor','middle');
+      t.setAttribute('fill','white');
+      t.setAttribute('font-size', cat.length > 6 ? '13' : '15');
+      t.setAttribute('font-weight','bold');
+      t.setAttribute('font-family','PingFang SC, Microsoft YaHei, sans-serif');
+      t.setAttribute('style','text-shadow:1px 1px 2px rgba(0,0,0,0.6)');
+      t.textContent = line;
+      g.appendChild(t);
+    });
+    wheelSvg.appendChild(g);
+  });
+
+  // center circle
+  const center = document.createElementNS('http://www.w3.org/2000/svg','circle');
+  center.setAttribute('cx',CX); center.setAttribute('cy',CY); center.setAttribute('r','18');
+  center.setAttribute('fill','white'); center.setAttribute('stroke','#004c91'); center.setAttribute('stroke-width','3');
+  wheelSvg.appendChild(center);
+}
+
+function generateWordButtons() {
+  wordButtonsEl.innerHTML = '';
+  selectedWords = [];
+  updateCount();
+  const all = [];
+  Object.values(leadershipData).forEach(w => all.push(...w));
+  all.sort(() => Math.random() - 0.5).forEach(word => {
+    const btn = document.createElement('button');
+    btn.className = 'word-button';
+    btn.textContent = word;
+    btn.dataset.word = word;
+    btn.addEventListener('click', () => {
+      if (isSpinning || !currentCategory) return;
+      if (btn.classList.contains('selected')) {
+        btn.classList.remove('selected');
+        selectedWords = selectedWords.filter(w => w !== word);
+      } else if (selectedWords.length < wordsPerRound) {
+        btn.classList.add('selected');
+        selectedWords.push(word);
       }
-      .fixed-logo:hover {
-        opacity: 0.8;
-      }
-      .fixed-logo img {
-        width: 60px;
-        height: auto;
-        border-radius: 50%;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-      }
+      updateCount();
+    });
+    wordButtonsEl.appendChild(btn);
+  });
+}
 
-      /* 移动端样式：当屏幕宽度小于等于768px时生效（常见断点） */
-      @media (max-width: 768px) {
-        .fixed-logo img {
-          width: 40px; /* 移动端宽度 */
-        }
-        /* 如果需要，也可以同时调整Logo距离边界的距离 */
-        .fixed-logo {
-          bottom: 15px;
-          right: 15px;
-        }
-      }
-    </style>
-    <div class="fixed-logo">
-      <img src="https://aloha.walmartmobile.cn/user-center/upload/viewImage/bktuser-center-prod-8702570844139794433.png" alt="Logo" loading="lazy">
-    </div>
-  </body>
+function updateCount() {
+  selectedCountEl.textContent = selectedWords.length;
+  submitButton.disabled = (selectedWords.length !== wordsPerRound || isSpinning || !currentCategory);
+}
+
+function spinWheel() {
+  if (isSpinning) return;
+  isSpinning = true;
+  spinButton.disabled = true;
+  submitButton.disabled = true;
+  resultMsg.textContent = '';
+  resultMsg.className = 'result-message';
+  document.querySelectorAll('.word-button').forEach(b => {
+    b.classList.remove('selected','correct','incorrect');
+    b.disabled = false;
+  });
+  selectedWords = [];
+  updateCount();
+
+  const cats = Object.keys(leadershipData);
+  const idx  = Math.floor(Math.random() * cats.length);
+  currentCategory = cats[idx];
+
+  const slice = 360 / cats.length;
+  const extra = 360 * 5;
+  // pointer is at top (0 deg). We want slice[idx] center to land at top.
+  // slice[idx] center angle = slice*idx + slice/2
+  // We need wheel to rotate so that angle comes to 0 (top)
+  const targetStop = 360 - (slice * idx + slice / 2);
+  currentRotation = extra + targetStop;
+
+  wheelSvg.style.transition = 'transform 4s cubic-bezier(0.2,0.8,0.3,1)';
+  wheelSvg.style.transform  = `rotate(${currentRotation}deg)`;
+
+  setTimeout(() => {
+    isSpinning = false;
+    spinButton.disabled = false;
+    selectedCatEl.textContent = currentCategory;
+    selectedCatEl.style.background = `linear-gradient(to right, ${categoryColors[currentCategory]}, ${darken(categoryColors[currentCategory],20)})`;
+    updateCount();
+  }, 4000);
+}
+
+function darken(hex, pct) {
+  const n=parseInt(hex.slice(1),16), a=Math.round(2.55*pct);
+  const R=(n>>16)-a, G=(n>>8&0xFF)-a, B=(n&0xFF)-a;
+  return '#'+(0x1000000+(R<0?0:R)*0x10000+(G<0?0:G)*0x100+(B<0?0:B)).toString(16).slice(1);
+}
+
+function showRoundModal(rs, isFinal) {
+  const m = document.createElement('div');
+  m.className = 'modal-overlay';
+  let msg = `\u7b2c${round}\u56de\u5408\u7ed3\u675f\uff01\u672c\u8f6e\u83b7\u5f97 <strong>${rs}</strong> \u5206\uff0c\u603b\u5206 <strong>${score}</strong> \u5206\u3002`;
+  if (!isFinal) msg += `<br><br>\u51c6\u5907\u5f00\u59cb\u7b2c ${round+1} \u56de\u5408\uff01`;
+  m.innerHTML = `<div class="modal-content">
+    <h2 class="modal-title">${isFinal?'\u6e38\u620f\u7ed3\u675f':'\u56de\u5408\u7ed3\u675f'}</h2>
+    <p class="modal-message">${msg}</p>
+    <button class="modal-button" id="mBtn">${isFinal?'\u67e5\u770b\u7ed3\u679c':'\u7ee7\u7eed\u6e38\u620f'}</button>
+  </div>`;
+  document.body.appendChild(m);
+  document.getElementById('mBtn').addEventListener('click', () => {
+    document.body.removeChild(m);
+    if (isFinal) showFinalModal(); else spinButton.disabled = false;
+  });
+}
+
+function showFinalModal() {
+  const passed = score >= passingScore;
+  const m = document.createElement('div');
+  m.className = 'modal-overlay';
+  const msg = passed
+    ? `\ud83c\udf89 \u606d\u559c\u60a8\uff01\u4ee5 <strong>${score}</strong> \u5206\u6210\u529f\u901a\u5173\uff01`
+    : `\u5f88\u9057\u61be\uff0c\u60a8\u83b7\u5f97\u4e86 <strong>${score}</strong> \u5206\uff0c\u672a\u80fd\u8fbe\u5230 16 \u5206\u7684\u901a\u5173\u6807\u51c6\u3002\u8bf7\u518d\u63a5\u518d\u5389\uff01`;
+  m.innerHTML = `<div class="modal-content">
+    <h2 class="modal-title">${passed?'\u606d\u559c\u901a\u5173\uff01\ud83c\udfc6':'\u6e38\u620f\u7ed3\u675f'}</h2>
+    <p class="modal-message">${msg}</p>
+    <button class="modal-button" onclick="location.reload()">\u91cd\u65b0\u5f00\u59cb</button>
+  </div>`;
+  document.body.appendChild(m);
+}
+
+function submitAnswer() {
+  if (isSpinning || !currentCategory || selectedWords.length !== wordsPerRound) return;
+  round++;
+  roundEl.textContent = round;
+  document.querySelectorAll('.word-button').forEach(b => b.disabled = true);
+  submitButton.disabled = true;
+
+  const correct = leadershipData[currentCategory];
+  let cnt = 0;
+  selectedWords.forEach(w => {
+    const b = document.querySelector(`.word-button[data-word="${w}"]`);
+    if (correct.includes(w)) { b.classList.add('correct'); cnt++; }
+    else b.classList.add('incorrect');
+  });
+
+  const rs = cnt * 2;
+  score += rs;
+  scoreEl.textContent = score;
+
+  if (cnt === wordsPerRound) {
+    resultMsg.textContent = `\u5b8c\u7f8e\uff01\u5168\u90e8\u6b63\u786e\uff01\u83b7\u5f97 ${rs} \u5206\u3002`;
+    resultMsg.className = 'result-message correct-message';
+  } else {
+    resultMsg.textContent = `\u9009\u5bf9 ${cnt} \u4e2a\uff0c\u83b7\u5f97 ${rs} \u5206\u3002\u6b63\u786e\u7b54\u6848\uff1a${correct.join('\u3001')}`;
+    resultMsg.className = 'result-message incorrect-message';
+  }
+  setTimeout(() => showRoundModal(rs, round >= maxRounds), 1500);
+}
+
+spinButton.addEventListener('click', spinWheel);
+submitButton.addEventListener('click', submitAnswer);
+initWheel();
+generateWordButtons();
+</script>
+</body>
 </html>
