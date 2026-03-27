@@ -40,7 +40,13 @@ h1 { color:#004c91; font-size:19px; text-align:center; margin-bottom:10px; line-
 
 /* SVG wheel */
 .wheel-container { position:relative; width:280px; height:280px; }
-#wheelSvg { transition: transform 4s cubic-bezier(0.2,0.8,0.3,1); transform-origin: center center; }
+#wheelSvg { transition: transform 4s cubic-bezier(0.2,0.8,0.3,1); transform-origin: center center; filter: drop-shadow(0 0 8px rgba(0,76,145,0.4)); }
+@keyframes wheelGlow {
+  0%   { filter: drop-shadow(0 0 8px rgba(0,113,206,0.4)); }
+  50%  { filter: drop-shadow(0 0 22px rgba(255,194,32,0.9)); }
+  100% { filter: drop-shadow(0 0 8px rgba(0,113,206,0.4)); }
+}
+.spinning { animation: wheelGlow 0.6s ease-in-out infinite; }
 .pointer {
   position:absolute; top:-18px; left:50%; transform:translateX(-50%);
   width:34px; height:50px;
@@ -114,7 +120,7 @@ h1 { color:#004c91; font-size:19px; text-align:center; margin-bottom:10px; line-
     <ul>
       <li>&#28857;&#20987;&#8220;&#36716;&#21160;&#36716;&#30424;&#8221;&#65292;&#36716;&#30424;&#38543;&#26426;&#20572;&#22312;&#19968;&#20010;&#39046;&#23548;&#21147;&#35201;&#32032;</li>
       <li>&#20174;&#19979;&#26041;&#35789;&#35821;&#20013;&#36873;&#25321; 3 &#20010;&#23646;&#20110;&#35813;&#35201;&#32032;&#30340;&#35789;&#35821;</li>
-      <li>&#27599;&#36873;&#23545;&#19968;&#20010;&#24471; 2 &#20998;&#65292;&#20849; 3 &#36718;&#65292;&#24471;&#20998; &ge; 16 &#20998;&#36890;&#20851;</li>
+      <li>&#27599;&#36873;&#23545;&#19968;&#20010;&#24471; 1 &#20998;&#65292;&#20849; 3 &#36718;&#65292;&#28385;&#20998; 9 &#20998;&#65292;&#24471;&#20998; &ge; 8 &#20998;&#36890;&#20851;</li>
     </ul>
   </div>
 
@@ -152,8 +158,8 @@ const categoryColors = {
 };
 
 let isSpinning=false, currentCategory=null, selectedWords=[];
-let score=0, round=0, currentRotation=0;
-const maxRounds=3, wordsPerRound=3, passingScore=16;
+let score=0, round=0, currentRotation=0, usedCategories=[];
+const maxRounds=3, wordsPerRound=3, passingScore=8;
 
 const wheelSvg      = document.getElementById('wheelSvg');
 const spinButton    = document.getElementById('spinButton');
@@ -288,27 +294,45 @@ function spinWheel() {
   updateCount();
 
   const cats = Object.keys(leadershipData);
-  const idx  = Math.floor(Math.random() * cats.length);
+  const available = cats.filter(c => !usedCategories.includes(c));
+  const idx  = cats.indexOf(available[Math.floor(Math.random() * available.length)]);
   currentCategory = cats[idx];
 
   const slice = 360 / cats.length;
-  const extra = 360 * 5;
-  // pointer is at top (0 deg). We want slice[idx] center to land at top.
-  // slice[idx] center angle = slice*idx + slice/2
-  // We need wheel to rotate so that angle comes to 0 (top)
-  const targetStop = 360 - (slice * idx + slice / 2);
-  currentRotation = extra + targetStop;
+  // 计算目标扇形中心需要转到顶部的角度（指针在顶部）
+  // 扇形idx的中心角度 = slice*idx + slice/2
+  // 要让这个角度转到顶部(0度)，需要转到 360 - (slice*idx + slice/2)
+  const sliceCenter = slice * idx + slice / 2;
+  const targetAngle = 360 - (sliceCenter % 360);
+  // 每次固定转10圈再加上目标角度，并且重置基准确保精确
+  currentRotation = Math.ceil(currentRotation / 360) * 360 + 360 * 10 + targetAngle;
 
-  wheelSvg.style.transition = 'transform 4s cubic-bezier(0.2,0.8,0.3,1)';
+  wheelSvg.classList.add('spinning');
+  // 第一阶段：匀速快转，最后才减速
+  wheelSvg.style.transition = 'transform 5s cubic-bezier(0.25, 0.1, 0.1, 1)';
   wheelSvg.style.transform  = `rotate(${currentRotation}deg)`;
 
   setTimeout(() => {
-    isSpinning = false;
-    spinButton.disabled = false;
-    selectedCatEl.textContent = currentCategory;
-    selectedCatEl.style.background = `linear-gradient(to right, ${categoryColors[currentCategory]}, ${darken(categoryColors[currentCategory],20)})`;
-    updateCount();
-  }, 4000);
+    wheelSvg.classList.remove('spinning');
+    // 第二阶段：轻微抖动，模拟"咔哒"停下
+    wheelSvg.style.transition = 'transform 0.15s ease-out';
+    wheelSvg.style.transform  = `rotate(${currentRotation + 6}deg)`;
+    setTimeout(() => {
+      wheelSvg.style.transition = 'transform 0.15s ease-in-out';
+      wheelSvg.style.transform  = `rotate(${currentRotation - 3}deg)`;
+      setTimeout(() => {
+        wheelSvg.style.transition = 'transform 0.1s ease-out';
+        wheelSvg.style.transform  = `rotate(${currentRotation}deg)`;
+        setTimeout(() => {
+          isSpinning = false;
+          spinButton.disabled = false;
+          selectedCatEl.textContent = currentCategory;
+          selectedCatEl.style.background = `linear-gradient(to right, ${categoryColors[currentCategory]}, ${darken(categoryColors[currentCategory],20)})`;
+          updateCount();
+        }, 150);
+      }, 150);
+    }, 150);
+  }, 5000);
 }
 
 function darken(hex, pct) {
@@ -340,7 +364,7 @@ function showFinalModal() {
   m.className = 'modal-overlay';
   const msg = passed
     ? `\ud83c\udf89 \u606d\u559c\u60a8\uff01\u4ee5 <strong>${score}</strong> \u5206\u6210\u529f\u901a\u5173\uff01`
-    : `\u5f88\u9057\u61be\uff0c\u60a8\u83b7\u5f97\u4e86 <strong>${score}</strong> \u5206\uff0c\u672a\u80fd\u8fbe\u5230 16 \u5206\u7684\u901a\u5173\u6807\u51c6\u3002\u8bf7\u518d\u63a5\u518d\u5389\uff01`;
+    : `\u5f88\u9057\u61be\uff0c\u60a8\u83b7\u5f97\u4e86 <strong>${score}</strong> \u5206\uff0c\u672a\u80fd\u8fbe\u5230 8 \u5206\u7684\u901a\u5173\u6807\u51c6\u3002\u8bf7\u518d\u63a5\u518d\u5389\uff01`;
   m.innerHTML = `<div class="modal-content">
     <h2 class="modal-title">${passed?'\u606d\u559c\u901a\u5173\uff01\ud83c\udfc6':'\u6e38\u620f\u7ed3\u675f'}</h2>
     <p class="modal-message">${msg}</p>
@@ -357,6 +381,7 @@ function submitAnswer() {
   submitButton.disabled = true;
 
   const correct = leadershipData[currentCategory];
+  usedCategories.push(currentCategory);
   let cnt = 0;
   selectedWords.forEach(w => {
     const b = document.querySelector(`.word-button[data-word="${w}"]`);
@@ -364,7 +389,7 @@ function submitAnswer() {
     else b.classList.add('incorrect');
   });
 
-  const rs = cnt * 2;
+  const rs = cnt * 1;
   score += rs;
   scoreEl.textContent = score;
 
